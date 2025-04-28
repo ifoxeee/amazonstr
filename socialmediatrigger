@@ -1,0 +1,1 @@
+amplify add function
