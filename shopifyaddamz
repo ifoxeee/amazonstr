@@ -1,0 +1,60 @@
+# Install required libraries: pip install boto3 requests
+import boto3
+import requests
+
+# Amazon MCF configuration
+amazon_credentials = {
+    'access_key': 'YOUR_AWS_ACCESS_KEY',
+    'secret_key': 'YOUR_AWS_SECRET_KEY',
+    'region': 'us-east-1'
+}
+
+# Shopify configuration
+shopify_api_key = "YOUR_SHOPIFY_API_KEY"
+shopify_password = "YOUR_SHOPIFY_PASSWORD"
+shopify_store = "YOUR_SHOPIFY_STORE_NAME"
+
+# Connect to Amazon MCF
+def connect_amazon_mcf():
+    client = boto3.client(
+        'mws',  # For MCF, use the MWS or Selling Partner API
+        aws_access_key_id=amazon_credentials['access_key'],
+        aws_secret_access_key=amazon_credentials['secret_key'],
+        region_name=amazon_credentials['region']
+    )
+    # Example: Submit a fulfillment order
+    response = client.create_fulfillment_order(
+        SellerFulfillmentOrderId='YOUR_ORDER_ID',
+        DisplayableOrderId='YOUR_DISPLAY_ID',
+        DisplayableOrderDateTime='2025-04-28T12:00:00Z',
+        DisplayableOrderComment='Order from Shopify',
+        ShippingSpeedCategory='Standard',
+        DestinationAddress={
+            'Name': 'Customer Name',
+            'Line1': '123 Main St',
+            'City': 'Seattle',
+            'StateOrRegion': 'WA',
+            'CountryCode': 'US',
+            'PostalCode': '98101',
+        },
+        Items=[
+            {
+                'SellerSKU': 'SKU123',
+                'Quantity': 1,
+                'FulfillmentNetworkSKU': 'FULFILLMENT_SKU'
+            },
+        ]
+    )
+    print(response)
+
+# Fetch orders from Shopify
+def fetch_shopify_orders():
+    url = f"https://{shopify_api_key}:{shopify_password}@{shopify_store}.myshopify.com/admin/api/2023-04/orders.json"
+    response = requests.get(url)
+    orders = response.json()
+    print(orders)
+
+# Main function
+if __name__ == "__main__":
+    fetch_shopify_orders()
+    connect_amazon_mcf()
