@@ -1,0 +1,8 @@
+{
+  "Effect": "Allow",
+  "Action": ["s3:PutObject", "s3:GetObject"],
+  "Resource": [
+    "arn:aws:s3:::your-bucket/social-media-uploads/*",
+    "arn:aws:s3:::your-bucket/analytics/*"
+  ]
+}
